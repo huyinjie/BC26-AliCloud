@@ -31,46 +31,46 @@ void Clear_Buffer(void) //清空缓存
 void BC26_Init(void)
 {
     printf("AT\r\n"); 
-    delay_ms(300);
+    delay_ms(600);
     strx=strstr((const char*)RxBuffer,(const char*)"OK");//返回OK
     Clear_Buffer();	
     while(strx==NULL)
     {
         Clear_Buffer();	
         printf("AT\r\n"); 
-        delay_ms(300);
+        delay_ms(600);
         strx=strstr((const char*)RxBuffer,(const char*)"OK");//返回OK
     }
     printf("AT+CFUN=1\r\n");//获取卡号，类似是否存在卡的意思，比较重要。
-    delay_ms(300);
+    delay_ms(600);
     printf("AT+CIMI\r\n");//获取卡号，类似是否存在卡的意思，比较重要。
-    delay_ms(300);
+    delay_ms(600);
     strx=strstr((const char*)RxBuffer,(const char*)"460");//返460，表明识别到卡了
     Clear_Buffer();	
     while(strx==NULL)
     {
         Clear_Buffer();	
         printf("AT+CIMI\r\n");//获取卡号，类似是否存在卡的意思，比较重要。
-        delay_ms(300);
+        delay_ms(600);
         strx=strstr((const char*)RxBuffer,(const char*)"460");//返回OK,说明卡是存在的
     }
         printf("AT+CGATT=1\r\n");//激活网络，PDP
-        delay_ms(300);
+        delay_ms(600);
         strx=strstr((const char*)RxBuffer,(const char*)"OK");//返OK
         Clear_Buffer();	
         printf("AT+CGATT?\r\n");//查询激活状态
-        delay_ms(300);
+        delay_ms(600);
         strx=strstr((const char*)RxBuffer,(const char*)"+CGATT: 1");//返1
         Clear_Buffer();	
 		while(strx==NULL)
 		{
             Clear_Buffer();	
             printf("AT+CGATT?\r\n");//获取激活状态
-            delay_ms(300);
+            delay_ms(600);
             strx=strstr((const char*)RxBuffer,(const char*)"+CGATT: 1");//返回1,表明注网成功
 		}
 		printf("AT+CESQ\r\n");//查看获取CSQ值
-        delay_ms(300);
+        delay_ms(600);
         strx=strstr((const char*)RxBuffer,(const char*)"+CESQ");//返回CSQ
 		if(strx)
 			{
@@ -82,10 +82,10 @@ void BC26_Init(void)
                         BC26_Status.netstatus=0;
 						Uart1_SendStr("信号搜索失败，请查看原因!\r\n");
                         RESET=1;//拉低
-                        delay_ms(300);
-                        delay_ms(300);	
+                        delay_ms(600);
+                        delay_ms(600);	
                         RESET=0;//复位模块
-						delay_ms(300);//没有信号就复位
+						delay_ms(600);//没有信号就复位
                         
 					}
 				}
@@ -103,7 +103,7 @@ void BC26_ConUDP(void)
 {
 	uint8_t i;
 	printf("AT+QSOCL=0\r\n");//关闭socekt连接
-	delay_ms(300);
+	delay_ms(600);
     IWDG_Feed();//喂狗
 }
 
@@ -112,7 +112,7 @@ void BC26_ConTCP(void)
 {
 		uint8_t i;
 	printf("AT+QICLOSE=0\r\n");//关闭socekt连接
-	delay_ms(300);
+	delay_ms(600);
     Clear_Buffer();
     IWDG_Feed();//喂狗
 }
@@ -122,7 +122,7 @@ void BC26_CreateTCPSokcet(void)//创建sokcet
 {
 
     printf("AT+QIOPEN=1,0,\"TCP\",\"47.99.80.89\",14269,1234,1\r\n");//创建连接TCP,输入IP以及服务器端口号码 ,采用直接吐出的方式
-    delay_ms(300);
+    delay_ms(600);
     strx=strstr((const char*)RxBuffer,(const char*)"+QIOPEN: 0,0");//检查是否登陆成功
  	while(strx==NULL)
 		{
@@ -143,7 +143,7 @@ void BC26_Senddata(uint8_t *len,uint8_t *data)//字符串形式
 void BC26_Senddatahex(uint8_t *len,uint8_t *data)//发送十六进制数据
 {
     printf("AT+QISENDEX=0,%s,%s\r\n",len,data);
-        delay_ms(300);
+        delay_ms(600);
  	while(strx==NULL)
 		{
             strx=strstr((const char*)RxBuffer,(const char*)"SEND OK");//检查是否发送成功
@@ -163,7 +163,7 @@ void BC26_RECData()
        
         BC26_Status.Socketnum=strx[8];//编号
       //  BC26_Status.reclen=strx[10];//长度,低于10个内的
-        delay_ms(300);
+        delay_ms(600);
         strx=strstr((const char*)RxBuffer,(const char*)",");//获取到第一个逗号
         for(i=0;;i++)
         { 
@@ -212,9 +212,9 @@ void BC26_ChecekConStatus(void)
 void MQTT_Init(void)
 {
     printf("AT+QMTCFG=\"aliauth\",0,\"%s\",\"%s\",\"%s\"\r\n",ProductKey,DeviceName,DeviceSecret);
-    delay_ms(300);
+    delay_ms(600);
     printf("AT+QMTOPEN=0,\"139.196.135.135\",1883\r\n");//通过TCP方式去连接MQTT阿里云服务器 
-    delay_ms(300);
+    delay_ms(600);
     strx=strstr((const char*)RxBuffer,(const char*)"+QMTOPEN: 0,0");//看下返回状态
     while(strx==NULL)
     {
@@ -222,7 +222,7 @@ void MQTT_Init(void)
     }
     Clear_Buffer(); 
     printf("AT+QMTCONN=0,\"clientExample_2020\"\r\n");//去登录MQTT服务器
-    delay_ms(300);
+    delay_ms(600);
     strx=strstr((const char*)RxBuffer,(const char*)"+QMTCONN: 0,0,0");//看下返回状态
     while(strx==NULL)
     {
@@ -246,7 +246,7 @@ void aliyunMQTT_PUBdata(u8 temp,u8 humi)
 {
     u8 t_payload[200],len;
     printf("AT+QMTPUB=0,0,0,0,%s\r\n",PubTopic);    //发布主题
-    delay_ms(300);
+    delay_ms(600);
     // 将temp,humi放入需要publish的字符串中
     len=Mqttaliyun_Savedata(t_payload,temp,humi);
     t_payload[len]=0;
@@ -273,7 +273,8 @@ u8 Mqttaliyun_Savedata(u8 *t_payload,u8 temp,u8 humi)
 	int err;
 	uint16_t pkt_id = 1;
     char led1status1,led1status2;
-    char json[] = "{\"id\":\"26\",\"version\":\"1.0\",\"params\":{\"CurrentTemperature\":{\"value\":50,\"time\": 1524448722000},\"RelativeHumidity\":{\"value\":50,\"time\": 1524448722000}},\"method\":\"thing.event.property.post\"}";
+    char json[] = "aaabbbccc";
+    // char json[] = "{\"id\":\"26\",\"version\":\"1.0\",\"params\":{\"CurrentTemperature\":{\"value\":50,\"time\": 1524448722000},\"RelativeHumidity\":{\"value\":50,\"time\": 1524448722000}},\"method\":\"thing.event.property.post\"}";
     // char json[] = "{\"id\":\"26\",\"version\":\"1.0\",\"params\":{\"CurrentTemperature\":{\"value\":%d,\"time\": 1524448722000},\"RelativeHumidity\":{\"value\":%d,\"time\": 1524448722000}},\"method\":\"thing.event.property.post\"}";
     // char json[]="{\"datastreams\":[{\"id\":\"location\",\"datapoints\":[{\"value\":{\"lon\":%2.6f,\"lat\":%2.6f}}]}]}";
     char t_json[200];
