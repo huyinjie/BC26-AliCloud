@@ -75,7 +75,7 @@ int main(void)
     LED_Init();               //初始化与LED连接的硬件接口
     BC26CTR_Init();           //初始化BC26的PWR与RESET引脚
     uart_init(115200);        //串口1初始化，可连接PC进行打印模块返回数据
-    uart3_init(115200);       //初始化和GPRS连接串口
+    uart3_init(9600);       //初始化和GPRS连接串口
                               // IWDG_Init(7,625);     //8S一次
                               //  while(DHT11_Init())
                               // {}
